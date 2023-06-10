@@ -30,10 +30,14 @@ const studentSchema = new Schema(
     password: {
       type: String,
       required: true,
+    },
+    telegramUserName: {
+      type: String,
+      required: true,
       lowercase: true,
       trim: true,
     },
-    phoneNumber: {
+    hall: {
       type: String,
       required: true,
       lowercase: true,

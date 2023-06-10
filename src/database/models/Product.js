@@ -19,7 +19,10 @@ const productSchema = new Schema(
       type: String,
       required: true,
       lowercase: true,
-      trim: true,
+    },
+    image: {
+      type: String,
+      required: true,
     },
     wishlist: {
       type: Boolean,

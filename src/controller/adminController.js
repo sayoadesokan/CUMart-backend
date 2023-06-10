@@ -1,6 +1,7 @@
 const { ADMIN_USERNAME, ADMIN_PASSWORD } = require('../config');
 const Admin = require('../database/models/Admin');
 const Product = require('../database/models/Product');
+const { Student } = require('../database/models/Student');
 const {
   generateSalt,
   generatePassword,
@@ -12,6 +13,7 @@ const saveAdminLogin = async (req, res, next) => {
   try {
     const salt = await generateSalt();
     const newPassword = await generatePassword(ADMIN_PASSWORD, salt);
+    console.log(newPassword);
 
     const newAdmin = await new Admin({
       userName: ADMIN_USERNAME,
@@ -22,8 +24,8 @@ const saveAdminLogin = async (req, res, next) => {
     if (newAdmin) {
       const signature = await generateSignature({
         _id: newAdmin.id,
-        email: newAdmin.email,
         userName: newAdmin.userName,
+        password: newAdmin.password,
       });
       return res.status(200).json({
         message: 'Login saved!',
@@ -42,7 +44,7 @@ const saveAdminLogin = async (req, res, next) => {
 const adminLogin = async (req, res, next) => {
   try {
     const { userName, password } = req.body;
-    const existingAdmin = await Admin.findOne({ userName });
+    const existingAdmin = await Admin.findOne({ userName: userName });
 
     if (existingAdmin !== null) {
       const validate = await ValidatePasswords(
@@ -50,18 +52,17 @@ const adminLogin = async (req, res, next) => {
         existingAdmin.password,
         existingAdmin.salt
       );
+      console.log(validate);
 
       if (validate) {
-        const signature = generateSignature({
+        const signature = await generateSignature({
           _id: existingAdmin.id,
-          email: existingAdmin.email,
           userName: existingAdmin.userName,
         });
 
         return res.status(200).json({
           message: 'Logged in successfully!',
           signature: signature,
-          email: existingAdmin.email,
         });
       }
     }
@@ -73,6 +74,22 @@ const adminLogin = async (req, res, next) => {
   }
 };
 
+const getAccessAllStudents = async (req, res, next) => {
+  try {
+    const admin = req.user;
+
+    if (admin) {
+      const students = await Student.find();
+
+      return res
+        .status(200)
+        .json({ message: 'All students loaded successfully', students });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const adminAccessAllGoods = async (req, res, next) => {
   try {
     const admin = req.user;
@@ -80,7 +97,9 @@ const adminAccessAllGoods = async (req, res, next) => {
     if (admin) {
       const products = await Product.find();
 
-      return res.status(200).json({ products });
+      return res
+        .status(200)
+        .json({ message: 'all product loaded successfully', products });
     }
 
     return res.status(400).json({ message: 'Error loading all goods!' });
@@ -114,6 +133,7 @@ const adminDeleteGood = async (req, res, next) => {
 module.exports = {
   saveAdminLogin,
   adminLogin,
+  getAccessAllStudents,
   adminAccessAllGoods,
   adminDeleteGood,
 };

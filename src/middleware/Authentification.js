@@ -1,10 +1,15 @@
-const validateSignature = require('../utils/index');
+const { validateSignature } = require('../utils/index');
 
 module.exports.Authenticate = async (req, res, next) => {
-  const validate = await validateSignature(req);
-  if (validate) {
+  try {
+    const validate = await validateSignature(req);
+    if (validate) {
+      next();
+    } else {
+      return res.json({ message: 'User not authorized' });
+    }
+  } catch (error) {
+    console.log(error);
     next();
-  } else {
-    return res.json({ message: 'User not authorized' });
   }
 };
