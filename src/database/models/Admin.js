@@ -7,14 +7,29 @@ const adminSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
     },
     password: {
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    salt: {
+      type: String,
+      required: true,
     },
   },
   {
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.password;
+        delete ret.salt;
+        delete ret.__v;
+      },
+    },
     timestamps: true,
   }
 );

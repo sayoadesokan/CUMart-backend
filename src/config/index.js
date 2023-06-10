@@ -12,4 +12,5 @@ module.exports = {
   MONGO_URL: process.env.MONGO_URL,
   ADMIN_USERNAME: process.env.ADMIN_USERNAME,
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
+  APP_SECRET: process.env.APP_SECRETS,
 };
