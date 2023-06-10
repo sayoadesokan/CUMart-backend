@@ -37,7 +37,7 @@ const saveAdminLogin = async (req, res, next) => {
     return res.status(400).json({ message: 'Error with signature' });
   } catch (error) {
     console.error(error);
-    next(error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -70,7 +70,6 @@ const adminLogin = async (req, res, next) => {
     res.status(400).json({ message: 'Username or password incorrect!' });
   } catch (error) {
     console.error(error);
-    next(error);
   }
 };
 
@@ -87,6 +86,7 @@ const getAccessAllStudents = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ message: 'Erroring loading all students' });
   }
 };
 
@@ -105,17 +105,17 @@ const adminAccessAllGoods = async (req, res, next) => {
     return res.status(400).json({ message: 'Error loading all goods!' });
   } catch (error) {
     console.error(error);
-    next(error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
 const adminDeleteGood = async (req, res, next) => {
   try {
     const admin = req.user;
-    const id = req.params.id;
+    const productSlug = req.params.productslug;
 
     if (admin) {
-      const deletedProduct = await Product.findByIdAndDelete(id);
+      const deletedProduct = await Product.findOneAndDelete(productSlug);
 
       return res.status(200).json({
         message: 'Successfully deleted the product!',
@@ -126,7 +126,7 @@ const adminDeleteGood = async (req, res, next) => {
     return res.status(400).json({ message: 'Error deleting product' });
   } catch (error) {
     console.error(error);
-    next(error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 

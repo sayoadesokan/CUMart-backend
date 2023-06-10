@@ -50,10 +50,6 @@ const studentSchema = new Schema(
     wishlist: {
       type: Array,
     },
-    product: {
-      type: Schema.Types.ObjectId,
-      ref: 'Product',
-    },
   },
   {
     toJSON: {

@@ -15,6 +15,6 @@ router
   .use(Authenticate)
   .get('/loadallstudents', getAccessAllStudents)
   .get('/allgoods', adminAccessAllGoods)
-  .delete('/deletegoods/:id', adminDeleteGood);
+  .delete('/deletegoods/:productslug', adminDeleteGood);
 
 module.exports = { router };

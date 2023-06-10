@@ -39,17 +39,17 @@ const studentRegister = async (req, res, next) => {
     const signature = await generateSignature({
       _id: newStudent.id,
       email: newStudent.email,
-      password: newStudent.password,
+      telegramUserName: newStudent.telegramUserName,
     });
 
     return res.status(200).json({
-      message: `Welcome ${firstName} successfully, Login!`,
+      message: `Welcome ${firstName}, successfully, Login!`,
       signature: signature,
       student: student,
     });
   } catch (error) {
     console.log(error);
-    next();
+    return res.status(500).json({ message: 'Error Registering User' });
   }
 };
 
@@ -58,7 +58,6 @@ const studentLogin = async (req, res, next) => {
     const { email, password } = req.body;
 
     const existingStudent = await Student.findOne({ email: email });
-    console.log(existingStudent);
 
     if (existingStudent) {
       const validate = await ValidatePasswords(
@@ -67,13 +66,11 @@ const studentLogin = async (req, res, next) => {
         existingStudent.salt
       );
 
-      console.log(validate);
-
       if (validate) {
         const signature = await generateSignature({
           _id: existingStudent.id,
           email: existingStudent.email,
-          password: existingStudent.password,
+          telegramUserName: existingStudent.telegramUserName,
         });
 
         return res.status(200).json({
@@ -87,7 +84,7 @@ const studentLogin = async (req, res, next) => {
     return res.status(401).json({ message: 'Login Error' });
   } catch (error) {
     console.log(error);
-    next();
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -109,6 +106,7 @@ const studentInfo = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ message: 'Cannot log student Information' });
     next();
   }
 };
@@ -143,44 +141,45 @@ const studentEditAccount = async (req, res, next) => {
     return res.status(400).json({ message: 'Error updating account' });
   } catch (error) {
     console.log(error);
-    next();
+    return res.status(500).json({ message: 'Error Updating account' });
   }
 };
 
 const addToWishlist = async (req, res, next) => {
   try {
+    const { product } = req.body;
+    const { _id } = req.user;
+    const student = await Student.findById(_id);
+
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    let oldWishlist = student.wishlist;
+    let newWishlist = [...oldWishlist, product];
+
+    student.wishlist = newWishlist;
+    await student.save();
+
+    return res.status(200).json({
+      message: 'Product added to wishlist',
+      wishlist: newWishlist,
+    });
   } catch (error) {
     console.log(error);
-    next();
+    return res.status(500).json({ message: 'Error adding to wishlist' });
   }
 };
 
 const studentWishlist = async (req, res, next) => {
   try {
+    const { _id } = req.user;
+
+    const studentWishlist = await Student.findById(_id).select('wishlist');
+    return res.status(200).send(studentWishlist);
   } catch (error) {
     console.log(error);
-    next();
-  }
-};
-
-const studentDeleteAccount = async (req, res, next) => {
-  try {
-    const student = req.user;
-
-    if (student) {
-      const studentId = student._id;
-      const existingStudent = await Student.deleteOne({ _id: studentId._id });
-
-      if (existingStudent) {
-        return res.status(200).json({
-          message: 'Account Deleted',
-          existingStudent,
-        });
-      }
-    }
-  } catch (error) {
-    console.log(error);
-    next();
+    return res.status(500).json({ message: 'Error Loading student wishlist' });
   }
 };
 
@@ -191,5 +190,4 @@ module.exports = {
   studentEditAccount,
   addToWishlist,
   studentWishlist,
-  studentDeleteAccount,
 };

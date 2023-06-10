@@ -4,7 +4,6 @@ const {
   studentRegister,
   studentLogin,
   studentEditAccount,
-  studentDeleteAccount,
   studentInfo,
   addToWishlist,
   studentWishlist,
@@ -18,8 +17,7 @@ router
   .get('/studentinfo', studentInfo)
   .put('/editaccount', studentEditAccount)
   .post('/addtowishlist', addToWishlist)
-  .get('/studentwishlist', studentWishlist)
-  .delete('/deleteaccount', studentDeleteAccount);
+  .get('/studentwishlist', studentWishlist);
 
 module.exports = {
   router,

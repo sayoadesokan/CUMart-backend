@@ -44,3 +44,11 @@ exports.telegramLink = (telegramUserName) => {
     return false;
   }
 };
+
+exports.convertToSlug = (productName) => {
+  return productName
+    .toLowerCase()
+    .replace(/[^a-zA-Z0-9]+/g, '-') // Replace non-alphanumeric characters with dashes
+    .replace(/^-+|-+$/g, '') // Remove leading and trailing dashes
+    .trim(); // Remove any whitespace
+};

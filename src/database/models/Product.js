@@ -6,8 +6,14 @@ const productSchema = new Schema(
     name: {
       type: String,
       required: true,
-      lowercase: true,
       trim: true,
+      unique: true,
+    },
+    productSlug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
     },
     description: {
       type: String,
@@ -20,12 +26,22 @@ const productSchema = new Schema(
       required: true,
       lowercase: true,
     },
+    category: {
+      type: String,
+      required: true,
+      lowercase: true,
+    },
+    location: {
+      type: String,
+      required: true,
+      lowercase: true,
+    },
     image: {
       type: String,
       required: true,
     },
-    wishlist: {
-      type: Boolean,
+    contact: {
+      type: String,
       required: true,
     },
   },
