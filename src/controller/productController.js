@@ -11,6 +11,8 @@ const createProduct = async (req, res, next) => {
 
     console.log(telegramUserName);
 
+    console.log(req.file);
+
     const result = await cloudinary.uploader.upload(req.file.path);
 
     const newProduct = await new Product({
