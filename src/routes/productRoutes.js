@@ -6,6 +6,7 @@ const {
   byCategory,
   byHall,
   getSingleProduct,
+  searchProduct,
 } = require('../controller/productController');
 const { Authenticate } = require('../middleware/Authentification');
 const router = express.Router();
@@ -14,6 +15,7 @@ const upload = require('../utils/multer');
 
 router
   .get('/getproduct', getProduct)
+  .get('/search/:name', searchProduct)
   .get('/getsingleproduct/:productSlug', getSingleProduct)
   .get('/category/:category', byCategory)
   .get('/location/:hall', byHall)

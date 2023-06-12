@@ -53,6 +53,21 @@ const getProduct = async (req, res, next) => {
   }
 };
 
+const searchProduct = async (req, res) => {
+  try {
+    const name = req.params.name;
+
+    const productName = await Product.find({ name: name }).sort({ name: 1 });
+
+    return res.status(200).json({
+      name: productName,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Prodcut does not exist' });
+  }
+};
+
 const getSingleProduct = async (req, res, next) => {
   try {
     const productSlug = req.params.productSlug;
@@ -73,7 +88,9 @@ const byCategory = async (req, res, next) => {
   try {
     const category = req.params.category;
 
-    const filteredProduct = await Product.find().sort({ category: 1 });
+    const filteredProduct = await Product.find({ category: category }).sort({
+      category: 1,
+    });
 
     return res.status(200).json({
       category: filteredProduct,
@@ -88,7 +105,7 @@ const byHall = async (req, res, next) => {
   try {
     const hall = req.params.hall;
 
-    const filteredHall = await Product.find().sort({ hall: 1 });
+    const filteredHall = await Product.find({ hall: hall }).sort({ hall: 1 });
 
     return res.status(200).json({
       category: filteredHall,
@@ -102,6 +119,7 @@ const byHall = async (req, res, next) => {
 module.exports = {
   createProduct,
   getProduct,
+  searchProduct,
   getSingleProduct,
   byCategory,
   byHall,
