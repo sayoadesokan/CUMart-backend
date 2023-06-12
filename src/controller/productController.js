@@ -10,8 +10,11 @@ const createProduct = async (req, res, next) => {
     const productSlug = convertToSlug(name);
 
     console.log(telegramUserName);
-
     console.log(req.file);
+
+    if (!req.file) {
+      return res.status(500).json({ message: 'Product image is required' });
+    }
 
     const result = await cloudinary.uploader.upload(req.file.path);
 
