@@ -57,14 +57,18 @@ const searchProduct = async (req, res) => {
   try {
     const name = req.params.name;
 
-    const productName = await Product.find({ name: name }).sort({ name: 1 });
+    const regex = new RegExp(name, 'i'); // 'i' flag makes it case-insensitive
+
+    const productName = await Product.find({ name: { $regex: regex } }).sort({
+      name: 1,
+    });
 
     return res.status(200).json({
       name: productName,
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: 'Prodcut does not exist' });
+    res.status(500).json({ message: 'Product does not exist' });
   }
 };
 
@@ -103,12 +107,14 @@ const byCategory = async (req, res, next) => {
 
 const byHall = async (req, res, next) => {
   try {
-    const hall = req.params.hall;
+    const location = req.params.hall;
 
-    const filteredHall = await Product.find({ hall: hall }).sort({ hall: 1 });
+    const filteredHall = await Product.find({ location: location }).sort({
+      location: 1,
+    });
 
     return res.status(200).json({
-      category: filteredHall,
+      hall: filteredHall,
     });
   } catch (error) {
     console.log(error);
