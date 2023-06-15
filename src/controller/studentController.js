@@ -71,8 +71,8 @@ const studentLogin = async (req, res, next) => {
       if (validate) {
         const signature = await generateSignature({
           _id: existingStudent.id,
-          firstName: newStudent.firstName,
-          lastName: newStudent.lastName,
+          firstName: existingStudent.firstName,
+          lastName: existingStudent.lastName,
           email: existingStudent.email,
           telegramUserName: existingStudent.telegramUserName,
         });
