@@ -4,13 +4,10 @@ const cloudinary = require('../utils/cloudinary');
 
 const createProduct = async (req, res, next) => {
   try {
-    const { telegramUserName } = req.user;
+    const { telegramUserName, firstName, lastName } = req.user;
     const { name, description, price, category, location } = req.body;
 
     const productSlug = convertToSlug(name);
-
-    console.log(telegramUserName);
-    console.log(req.file);
 
     if (!req.file) {
       return res.status(500).json({ message: 'Product image is required' });
@@ -27,6 +24,8 @@ const createProduct = async (req, res, next) => {
       location: location,
       image: result.secure_url,
       contact: telegramUserName,
+      firstName: firstName,
+      lastName: lastName,
     }).save();
 
     return res.status(200).json({

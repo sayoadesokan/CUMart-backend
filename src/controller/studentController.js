@@ -38,6 +38,8 @@ const studentRegister = async (req, res, next) => {
 
     const signature = await generateSignature({
       _id: newStudent.id,
+      firstName: newStudent.firstName,
+      lastName: newStudent.lastName,
       email: newStudent.email,
       telegramUserName: newStudent.telegramUserName,
     });
@@ -69,6 +71,8 @@ const studentLogin = async (req, res, next) => {
       if (validate) {
         const signature = await generateSignature({
           _id: existingStudent.id,
+          firstName: newStudent.firstName,
+          lastName: newStudent.lastName,
           email: existingStudent.email,
           telegramUserName: existingStudent.telegramUserName,
         });
