@@ -38,6 +38,65 @@ const createProduct = async (req, res, next) => {
   }
 };
 
+const editProduct = async (req, res, next) => {
+  try {
+    const { productSlug } = req.params;
+    const { name, description, price, category, location } = req.body;
+    const { telegramUserName, firstName, lastName } = req.user;
+
+    if (!req.file) {
+      return res.status(500).json({ message: 'Product image is required' });
+    }
+
+    const result = await cloudinary.uploader.upload(req.file.path);
+
+    // Find the existing product by its ID
+    const existingProduct = await Product.findOne({ productSlug: productSlug });
+
+    if (!existingProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Update the product properties with the new values
+    existingProduct.name = name;
+    existingProduct.description = description;
+    existingProduct.price = price;
+    existingProduct.category = category;
+    existingProduct.location = location;
+    existingProduct.image = result.secure_url;
+    existingProduct.contact = telegramUserName;
+    existingProduct.firstName = firstName;
+    existingProduct.lastName = lastName;
+
+    // Save the updated product
+    const updatedProduct = await existingProduct.save();
+
+    return res.status(200).json({
+      message: 'Product updated successfully',
+      product: updatedProduct,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Error updating product' });
+  }
+};
+
+const deleteProduct = async (req, res, next) => {
+  try {
+    const productSlug = req.params.productslug;
+
+    const deletedProduct = await Product.findOneAndDelete(productSlug);
+
+    return res.status(200).json({
+      message: 'Successfully deleted the product!',
+      deletedProduct,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Error deleting product' });
+  }
+};
+
 const getProduct = async (req, res, next) => {
   try {
     const getProducts = await Product.find();
@@ -123,6 +182,8 @@ const byHall = async (req, res, next) => {
 
 module.exports = {
   createProduct,
+  editProduct,
+  deleteProduct,
   getProduct,
   searchProduct,
   getSingleProduct,

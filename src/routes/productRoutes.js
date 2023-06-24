@@ -7,6 +7,8 @@ const {
   byHall,
   getSingleProduct,
   searchProduct,
+  editProduct,
+  deleteProduct,
 } = require('../controller/productController');
 const { Authenticate } = require('../middleware/Authentification');
 const router = express.Router();
@@ -20,6 +22,8 @@ router
   .get('/category/:category', byCategory)
   .get('/location/:hall', byHall)
   .use(Authenticate)
+  .put('/edit/:productSlug', upload.single('image'), editProduct)
+  .delete('/delete/:productSlug', deleteProduct)
   .post('/createproduct', upload.single('image'), createProduct);
 
 module.exports = {

@@ -15,7 +15,7 @@ const studentRegister = async (req, res, next) => {
     const existingStudent = await Student.findOne({ email: email });
 
     if (existingStudent) {
-      return res.status(400).send('User already exist!');
+      return res.status(400).send('Student already exist!');
     }
 
     const salt = await generateSalt();
@@ -51,7 +51,9 @@ const studentRegister = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: 'Error Registering User' });
+    return res
+      .status(500)
+      .json({ message: 'invalid student email or password' });
   }
 };
 
@@ -85,8 +87,11 @@ const studentLogin = async (req, res, next) => {
       }
     }
 
-    return res.status(401).json({ message: 'Login Error' });
+    return res
+      .status(401)
+      .json({ message: 'invalid student email or password' });
   } catch (error) {
+    L;
     console.log(error);
     return res.status(500).json({ message: 'Internal server error' });
   }
