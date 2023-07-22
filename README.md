@@ -1,4 +1,4 @@
-# CUMart - CU Students E-commerce Store
+# CUMart - CU Students E-commerce Store (Containerized using Docker and tested using Jest)
 
 CUMart is an e-commerce store exclusively for Covenant University students.
 Link to the frontend - Backend build: https://jolly-florentine-15181f.netlify.app/

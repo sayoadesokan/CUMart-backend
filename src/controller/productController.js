@@ -136,8 +136,14 @@ const getSingleProduct = async (req, res, next) => {
 
     const getProduct = await Product.findOne({ productSlug: productSlug });
 
+    if (!getProduct) {
+      // Product not found, return a 404 status code with a custom error message
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Product found, return it with a 200 status code
     res.status(200).json({
-      message: 'Products drawn successfully',
+      message: 'Product retrieved successfully',
       product: getProduct,
     });
   } catch (error) {
